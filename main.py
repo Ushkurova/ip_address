@@ -2,7 +2,27 @@
 import requests
 from pyfiglet import Figlet
 import folium
+import socket
 from folium.plugins import BeautifyIcon
+import http.client
+def get_ip():
+    conn = http.client.HTTPConnection("ifconfig.me")
+    conn.request("GET", "/ip")
+    ip = conn.getresponse().read()
+    ipstr = str(ip)
+    myIp=''
+    for i in range(len(ipstr)):
+        if i < 2:
+            continue
+        if i > len(ipstr) - 2:
+            continue
+        myIp += ipstr[i]
+    return myIp
+
+def get_ip_address():
+    hostname = socket.gethostname()
+    ip_address = socket.gethostbyname(hostname)
+    return ip_address
 def get_info_by_ip(ip='154.191.16.63'):
     try:
         response = requests.get(url=f'http://ip-api.com/json/{ip}').json()
@@ -29,10 +49,12 @@ def get_info_by_ip(ip='154.191.16.63'):
         print('please check your connection!')
 
 def main():
+    get_ip()
     preview_text = Figlet(font= 'slant')
     print(preview_text.renderText('IP INFO'))
-    ip = input('write ip adress:\n')
-    get_info_by_ip(ip)
+    #ip = input('write ip adress:\n')
+    #get_info_by_ip(ip)
+    get_info_by_ip(get_ip())
 
 if __name__ == '__main__':
     main()
